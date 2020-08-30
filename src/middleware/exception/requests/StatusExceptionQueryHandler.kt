@@ -1,23 +1,27 @@
 package cozy.middleware.exception.requests
 
 import com.trendyol.kediatr.QueryHandler
+import cozy.middleware.exception.StatusException
 import cozy.middleware.exception.data.ExceptionDetails
 import org.slf4j.LoggerFactory
 
 @Suppress("Unused")
 class StatusExceptionQueryHandler: QueryHandler<StatusExceptionQuery, ExceptionDetails> {
-    private val logger = LoggerFactory.getLogger(StatusExceptionQueryHandler::class.java)
+    // Get a logger for the StatusException context
+    private val logger = LoggerFactory.getLogger(StatusException::class.java)
 
     override fun handle(query: StatusExceptionQuery): ExceptionDetails {
+        // Declare the ExceptionDetails from the StatusException
         val details = ExceptionDetails(
             message = query.statusException.message ?: "(null)",
             status = query.statusException.status,
-            type = query.statusException::class.java.typeName.split(".").last(),
-            details = "Not implemented as of now!"
+            type = query.statusException::class.java.typeName.split(".").last()
         )
 
-        logger.warn("Status error: ${details.status} - ${details.message}")
+        // Provide some information about the exception to the log
+        logger.warn("Respond status \"${details.status}\" with message \"${details.message}\"")
 
+        // Return the ExceptionDetails
         return details
     }
 }

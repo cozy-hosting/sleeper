@@ -9,6 +9,7 @@ import org.koin.dsl.module
 
 fun KoinApplication.exception() {
     val services = module(createdAtStart = true) {
+        // CommandBus associated with the exception handling middleware
         single(named<ExceptionBus>()) { CommandBusBuilder(StatusExceptionQuery::class.java).build() }
     }
 

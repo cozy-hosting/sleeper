@@ -1,9 +1,9 @@
-package cozy.services
+package cozy.repositories
 
 import org.koin.core.KoinApplication
 import org.koin.dsl.module
 
-fun KoinApplication.services() {
+fun KoinApplication.repositories() {
     val services = module(createdAtStart = true) {
 
     }

@@ -1,12 +1,16 @@
 package cozy
 
+import cozy.endpoints.endpoints
 import cozy.middleware.auth.jwtBearer
-import cozy.requests.helloworld.helloWorld
-import cozy.requests.requests
-import cozy.requests.test.test
+import cozy.middleware.exception.ExceptionHandler.exceptionHandler
+import cozy.middleware.exception.StatusException
+import cozy.middleware.exception.exception
+import cozy.repositories.repositories
 import cozy.services.services
 import io.ktor.application.*
 import io.ktor.auth.*
+import io.ktor.features.*
+import io.ktor.gson.*
 import io.ktor.routing.*
 import io.ktor.server.netty.*
 import io.ktor.util.*
@@ -18,17 +22,34 @@ fun main(args: Array<String>): Unit = EngineMain.main(args)
 @Suppress("unused")
 fun Application.module() {
     install(Koin) {
-        requests()
+        exception()
+
+        endpoints()
         services()
+        repositories()
+    }
+
+    install(ContentNegotiation) {
+        gson {
+            setPrettyPrinting()
+        }
     }
 
     install(Authentication) {
         jwtBearer()
     }
 
+    install(StatusPages) {
+        exceptionHandler()
+    }
+
     install(Routing) {
-        helloWorld()
-        test()
+        // Endpoint routing goes here
+    }
+
+    routing {
+        get {
+            throw StatusException(message = "Hello World")
+        }
     }
 }
-

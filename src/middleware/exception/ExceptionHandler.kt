@@ -1,9 +1,7 @@
 package cozy.middleware.exception
 
 import com.trendyol.kediatr.CommandBus
-import cozy.middleware.exception.requests.ConstraintViolationExceptionQuery
-import cozy.middleware.exception.requests.ExceptionBus
-import cozy.middleware.exception.requests.StatusExceptionQuery
+import cozy.middleware.exception.requests.*
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
@@ -37,8 +35,11 @@ object ExceptionHandler: KoinComponent {
 
         // Interceptor function for handling any unhandled Exceptions
         // In the case that this is triggered we should investigate the cause
-        exception<Exception> {
-            call.respond(HttpStatusCode.InternalServerError)
+        exception<Throwable> {
+            val query = ThrowableQuery(it)
+
+            val result = bus.executeQuery(query)
+            call.respond(result.status, result)
         }
     }
 }

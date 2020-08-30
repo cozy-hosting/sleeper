@@ -52,11 +52,7 @@ fun Application.module() {
 
     routing {
         get {
-            call.respond(ExceptionDetails(
-                message = " ",
-                status = HttpStatusCode.Accepted,
-                type = " ",
-            ))
+            TODO()
         }
     }
 }

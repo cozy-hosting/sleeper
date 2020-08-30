@@ -13,7 +13,7 @@ class StatusExceptionQueryHandler: QueryHandler<StatusExceptionQuery, ExceptionD
     override fun handle(query: StatusExceptionQuery): ExceptionDetails {
         // Declare the ExceptionDetails from the StatusException
         val details = ExceptionDetails(
-            message = query.statusException.message ?: "(null)",
+            message = query.statusException.message!!,
             status = query.statusException.status,
             type = query.statusException::class.java.typeName.split(".").last()
         )

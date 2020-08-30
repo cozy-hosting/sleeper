@@ -1,6 +1,7 @@
 package cozy.middleware.exception
 
 import com.trendyol.kediatr.CommandBus
+import cozy.middleware.exception.requests.ConstraintViolationExceptionQuery
 import cozy.middleware.exception.requests.ExceptionBus
 import cozy.middleware.exception.requests.StatusExceptionQuery
 import io.ktor.application.*
@@ -20,15 +21,18 @@ object ExceptionHandler: KoinComponent {
         // In the case that this is triggered the user has probably done something wrong
         exception<StatusException> {
             val query = StatusExceptionQuery(it)
-            val result = bus.executeQuery(query)
 
+            val result = bus.executeQuery(query)
             call.respond(result.status, result)
         }
 
         // Interceptor function for handling ConstraintViolationException
         // In the case that this is triggered the user has passed invalid data
         exception<ConstraintViolationException> {
-            call.respond(HttpStatusCode.InternalServerError)
+            val query = ConstraintViolationExceptionQuery(it)
+
+            val result = bus.executeQuery(query)
+            call.respond(result.status, result)
         }
 
         // Interceptor function for handling any unhandled Exceptions

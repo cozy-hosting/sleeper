@@ -1,6 +1,9 @@
 package cozy.middleware.exception.data
 
 import io.ktor.http.*
+import org.valiktor.functions.isNotBlank
+import org.valiktor.functions.isNotNull
+import org.valiktor.validate
 import java.util.*
 
 data class ExceptionDetails(
@@ -18,4 +21,13 @@ data class ExceptionDetails(
 
     // Further details that are passed by a custom object
     val details: Any? = null
-)
+) {
+    init {
+        validate(this) {
+            validate(ExceptionDetails::id).isNotBlank()
+            validate(ExceptionDetails::message).isNotBlank()
+            validate(ExceptionDetails::status).isNotNull()
+            validate(ExceptionDetails::type).isNotBlank()
+        }
+    }
+}

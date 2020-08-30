@@ -7,7 +7,7 @@ import io.ktor.routing.*
 import org.koin.core.qualifier.named
 import org.koin.ktor.ext.inject
 
-fun Routing.requestsHelloWorld() {
+fun Routing.helloWorld() {
     val bus by inject<CommandBus>(named<HelloWorldBus>())
 
     get("/helloworld") {

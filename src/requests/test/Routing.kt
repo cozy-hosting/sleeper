@@ -7,7 +7,7 @@ import io.ktor.routing.*
 import org.koin.core.qualifier.named
 import org.koin.ktor.ext.inject
 
-fun Routing.requestsTest() {
+fun Routing.test() {
     val bus by inject<CommandBus>(named<TestBus>())
 
     get("/test") {

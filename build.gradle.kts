@@ -1,9 +1,12 @@
-import org.jetbrains.kotlin.gradle.dsl.Coroutines
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+val kotlinVersion: String by project
+val ktorVersion: String by project
+val logbackVersion: String by project
 
-val ktor_version: String by project
-val kotlin_version: String by project
-val logback_version: String by project
+val koinVersion: String by project
+val kediatrVersion: String by project
+val valikatorVersion: String by project
+
+val kubernetesVersion: String by project
 
 plugins {
     application
@@ -23,10 +26,17 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
-    implementation("io.ktor:ktor-server-netty:$ktor_version")
-    implementation("ch.qos.logback:logback-classic:$logback_version")
-    testImplementation("io.ktor:ktor-server-tests:$ktor_version")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
+    implementation("io.ktor:ktor-server-netty:$ktorVersion")
+    implementation("ch.qos.logback:logback-classic:$logbackVersion")
+
+    implementation("org.koin:koin-ktor:$koinVersion")
+    implementation("com.trendyol:kediatr-core:$kediatrVersion")
+    implementation("org.valiktor:valiktor-core:$valikatorVersion")
+
+    implementation("io.kubernetes:client-java:$kubernetesVersion")
+
+    testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
 }
 
 kotlin.sourceSets["main"].kotlin.srcDirs("src")

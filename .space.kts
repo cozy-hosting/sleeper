@@ -8,7 +8,6 @@ job("Build & test project") {
         }
 
         codeReviewOpened()
-        codeReviewClosed()
     }
 
     container("gradle:$gradleVersion") {

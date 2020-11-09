@@ -1,16 +1,20 @@
 package cozy.middleware.exception
 
 import com.trendyol.kediatr.CommandBus
+import com.trendyol.kediatr.Query
+import cozy.middleware.exception.data.ExceptionDetails
 import cozy.middleware.exception.requests.*
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
 import io.ktor.response.*
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinApiExtension
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.koin.core.qualifier.named
 import org.valiktor.ConstraintViolationException
 
+@KoinApiExtension
 object ExceptionHandler: KoinComponent {
     private val bus: CommandBus by inject(named<ExceptionBus>())
 
@@ -18,7 +22,9 @@ object ExceptionHandler: KoinComponent {
         // Interceptor function for handling StatusExceptions
         // In the case that this is triggered the user has probably done something wrong
         exception<StatusException> {
-            val query = StatusExceptionQuery(it)
+            var query: Query<ExceptionDetails> = StatusExceptionQuery(it)
+            if (it.status == HttpStatusCode.InternalServerError)
+                query = ThrowableQuery(it)
 
             val result = bus.executeQuery(query)
             call.respond(result.status, result)

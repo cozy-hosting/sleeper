@@ -54,7 +54,7 @@ class PemExtensionsTest: KoinTest {
         val signingRequestInPemFormat = signingRequest.toPemString()
 
         // Assert
-        val signingRequestSubject = "NEW CERTIFICATE REQUEST"
+        val signingRequestSubject = "CERTIFICATE REQUEST"
         PemFormatAssert.assertThat(signingRequestInPemFormat).isInPemFormat(signingRequestSubject)
     }
     // END: Tests

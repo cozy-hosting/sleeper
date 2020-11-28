@@ -24,7 +24,7 @@ fun PKCS10CertificationRequest.toPemString(): String {
     val stringWriter = StringWriter()
     val pemWriter = PemWriter(stringWriter)
 
-    val pemSubject = "NEW CERTIFICATE REQUEST"
+    val pemSubject = "CERTIFICATE REQUEST"
     val pemObject = PemObject(pemSubject, this.encoded)
     pemWriter.writeObject(pemObject)
 

@@ -1,7 +1,6 @@
 package cozy.services
 
 import com.typesafe.config.ConfigFactory
-import cozy.services.clients.*
 import cozy.services.cluster.*
 import cozy.services.crypto.CertificateService
 import cozy.services.crypto.CertificateServiceImpl

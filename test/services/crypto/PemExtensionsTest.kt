@@ -1,10 +1,10 @@
 package services.crypto
 
 import asserts.PemFormatAssert
-import cozy.services.cluster.ClusterUser
-import cozy.services.crypto.CertificateService
-import cozy.services.crypto.CertificateServiceImpl
-import cozy.services.crypto.toPemString
+import cozy.services.cluster.data.ClusterUser
+import cozy.services.cert.CertificateService
+import cozy.services.cert.CertificateServiceImpl
+import cozy.services.cert.toPemString
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension

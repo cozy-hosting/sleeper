@@ -1,6 +1,8 @@
 package services.cluster
 
 import cozy.services.cluster.*
+import cozy.services.cluster.data.ClusterClientConfig
+import cozy.services.cluster.data.ClusterUser
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test

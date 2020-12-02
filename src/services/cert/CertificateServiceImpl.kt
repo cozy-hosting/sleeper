@@ -1,4 +1,4 @@
-package cozy.services.crypto
+package cozy.services.cert
 
 import kotlinx.coroutines.coroutineScope
 import org.bouncycastle.jce.provider.BouncyCastleProvider
@@ -21,7 +21,7 @@ class CertificateServiceImpl: CertificateService {
             .getInstance("RSA", BouncyCastleProvider.PROVIDER_NAME)
         generator.initialize(2048)
 
-        return@coroutineScope generator.generateKeyPair()
+        generator.generateKeyPair()
     }
 
     override suspend fun buildSigningRequest(keyPair: KeyPair, principal: X500Principal): PKCS10CertificationRequest = coroutineScope {
@@ -32,7 +32,7 @@ class CertificateServiceImpl: CertificateService {
         val signerBuilder = JcaContentSignerBuilder("SHA256withRSA")
 
         val signer = signerBuilder.build(privateKey)
-        return@coroutineScope requestBuilder.build(signer)
+        requestBuilder.build(signer)
     }
 
 }

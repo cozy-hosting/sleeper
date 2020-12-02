@@ -1,4 +1,4 @@
-package cozy.services.crypto
+package cozy.services.cert
 
 import org.bouncycastle.pkcs.PKCS10CertificationRequest
 import org.bouncycastle.util.io.pem.PemObject

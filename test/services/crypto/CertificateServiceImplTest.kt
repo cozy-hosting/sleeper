@@ -1,8 +1,8 @@
 package services.crypto
 
-import cozy.services.cluster.ClusterUser
-import cozy.services.crypto.CertificateService
-import cozy.services.crypto.CertificateServiceImpl
+import cozy.services.cluster.data.ClusterUser
+import cozy.services.cert.CertificateService
+import cozy.services.cert.CertificateServiceImpl
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions
 import org.bouncycastle.asn1.x500.X500Name

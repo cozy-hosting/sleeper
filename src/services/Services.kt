@@ -1,9 +1,12 @@
 package cozy.services
 
 import com.typesafe.config.ConfigFactory
+import cozy.services.cert.SigningRequestService
+import cozy.services.cert.SigningRequestServiceImpl
 import cozy.services.cluster.*
-import cozy.services.crypto.CertificateService
-import cozy.services.crypto.CertificateServiceImpl
+import cozy.services.cert.CertificateService
+import cozy.services.cert.CertificateServiceImpl
+import cozy.services.cluster.data.ClusterClientConfig
 import io.ktor.config.*
 import io.ktor.util.*
 import org.koin.core.KoinApplication
@@ -21,6 +24,7 @@ fun KoinApplication.services() {
         single<ServiceClusterClient> { ServiceClusterClientImpl(ClusterClientConfig(applicationConfig)) }
 
         single<CertificateService> { CertificateServiceImpl() }
+        single<SigningRequestService> { SigningRequestServiceImpl() }
     }
 
     modules(services)

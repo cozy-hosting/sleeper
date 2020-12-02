@@ -1,5 +1,7 @@
 package cozy.services.cluster
 
+import cozy.services.cluster.data.ClusterClientConfig
+import cozy.services.cluster.data.ClusterUser
 import io.fabric8.kubernetes.client.Config
 import io.fabric8.kubernetes.client.ConfigBuilder
 import io.fabric8.kubernetes.client.DefaultKubernetesClient
@@ -14,19 +16,19 @@ class UserClusterClientImpl(private val config: ClusterClientConfig): UserCluste
     private val connector: ClusterClientConnector by inject()
 
     override suspend fun <T> connectAsUser(user: ClusterUser, block: KubernetesClient.() -> T): T {
-        val config = Config.empty()
-        config.isTrustCerts = true
-        config.masterUrl = this@UserClusterClientImpl.config.masterUrl
-        config.caCertFile = this@UserClusterClientImpl.config.caCertFile
+        val customConfig = Config.empty()
+        customConfig.isTrustCerts = true
+        customConfig.masterUrl = config.masterUrl
+        customConfig.caCertFile = config.caCertFile
 
         if (user.clientCert == null && user.clientKey == null)
             throw IllegalArgumentException("Both a client cert and private key must be provided alongside the user")
 
-        config.username = user.name
-        config.clientCertData = user.clientCert
-        config.clientKeyData = user.clientKey
+        customConfig.username = user.name
+        customConfig.clientCertData = user.clientCert
+        customConfig.clientKeyData = user.clientKey
 
-        val userSpecificConfig = ConfigBuilder(config).build()
+        val userSpecificConfig = ConfigBuilder(customConfig).build()
         val client = DefaultKubernetesClient(userSpecificConfig)
         return connector.connect(client, block)
     }

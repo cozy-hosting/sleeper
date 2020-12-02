@@ -1,4 +1,4 @@
-package cozy.services.cluster
+package cozy.services.cluster.data
 
 import io.ktor.config.*
 import io.ktor.util.*

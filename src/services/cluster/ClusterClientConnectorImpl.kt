@@ -14,8 +14,8 @@ class ClusterClientConnectorImpl: ClusterClientConnector {
         try {
             // Retrieve a connection from the underlying fabric8 Kubernetes Client
             // and auto dispose it once the query has been terminated
-            return@coroutineScope client.use { connection ->
-                return@use block(connection)
+            client.use { connection ->
+                block(connection)
             }
         } catch (ex: KubernetesClientException) {
             if (ex.status?.code == HttpStatusCode.Forbidden.value)

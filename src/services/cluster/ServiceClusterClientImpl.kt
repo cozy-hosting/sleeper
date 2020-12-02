@@ -1,5 +1,6 @@
 package cozy.services.cluster
 
+import cozy.services.cluster.data.ClusterClientConfig
 import io.fabric8.kubernetes.client.ConfigBuilder
 import io.fabric8.kubernetes.client.DefaultKubernetesClient
 import io.fabric8.kubernetes.client.KubernetesClient
@@ -14,7 +15,7 @@ class ServiceClusterClientImpl(private val config: ClusterClientConfig): Service
 
     override suspend fun <T> connectAsService(block: KubernetesClient.() -> T): T {
         val defaultConfig = ConfigBuilder()
-            .withMasterUrl(this@ServiceClusterClientImpl.config.masterUrl)
+            .withMasterUrl(config.masterUrl)
             .withTrustCerts(true)
             .build()
 

@@ -1,5 +1,6 @@
 package cozy.services.cluster
 
+import cozy.services.cluster.data.ClusterUser
 import io.fabric8.kubernetes.client.KubernetesClient
 
 interface UserClusterClient {

@@ -8,4 +8,6 @@ interface UserRepository {
 
     suspend fun create(userIdentity: ClusterUser): ClusterUser
 
+    suspend fun delete(userIdentity: ClusterUser): Boolean
+
 }

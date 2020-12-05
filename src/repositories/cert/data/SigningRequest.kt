@@ -6,7 +6,7 @@ import org.valiktor.functions.isNotNull
 import org.valiktor.validate
 import java.util.*
 
-data class SigningRequest(private val request: CertificateSigningRequest) {
+data class SigningRequest(val certificateSigningRequest: CertificateSigningRequest) {
 
     companion object {
         const val CLIENT_KEY = "clientKey"
@@ -14,23 +14,23 @@ data class SigningRequest(private val request: CertificateSigningRequest) {
 
     init {
         validate(this) {
-            validate(SigningRequest::request).isNotNull()
+            validate(SigningRequest::certificateSigningRequest).isNotNull()
 
             validate(SigningRequest::name).isNotBlank()
         }
     }
 
-    val name = request.metadata.name!!
+    val name = certificateSigningRequest.metadata.name!!
 
     val clientKey by lazy {
-        val clientKeyAsBase64 = request.metadata.annotations[CLIENT_KEY]!!
+        val clientKeyAsBase64 = certificateSigningRequest.metadata.annotations[CLIENT_KEY]!!
         val clientKeyAsByteArray = Base64.getDecoder().decode(clientKeyAsBase64)
 
         String(clientKeyAsByteArray)
     }
 
     val clientCert by lazy {
-        val clientCertAsBase64 = request.status?.certificate ?: return@lazy null
+        val clientCertAsBase64 = certificateSigningRequest.status?.certificate ?: return@lazy null
         val clientCertAsByteArray = Base64.getDecoder().decode(clientCertAsBase64)
 
         String(clientCertAsByteArray)

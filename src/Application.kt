@@ -60,46 +60,11 @@ fun Application.module() {
     routing {
         authenticate {
             get {
-                val userIdentity = ClusterUser(UUID.randomUUID().toString(), "Max Mustermann", arrayOf("Customers"))
+                val userIdentity = ClusterUser("16640c22-faf0-4766-813b-0494bdfe2642", "Max Mustermann", arrayOf("Customers"))
 
-                val user = userRepository.create(userIdentity)
+                val user = userRepository.delete(userIdentity)
 
                 call.respond(user)
-
-//                val response = client.connectAsService {
-//                    val approvalJob = JobBuilder()
-//                        .withNewMetadata()
-//                        .withName("approval-request-${.subSequence(0, 5)}")
-//                        .endMetadata()
-//                        .withNewSpec()
-//                        .withNewTemplate()
-//                        .withNewSpec()
-//                        .addNewContainer()
-//                        .withName("kubectl")
-//                        .withImage("bitnami/kubectl:latest")
-//                        .withArgs("certificate", "approve", "user-auth-request")
-//                        .endContainer()
-//                        .withRestartPolicy("Never")
-//                        .endSpec()
-//                        .endTemplate()
-//                        .endSpec()
-//                        .build()
-//
-//                    batch().jobs().inNamespace("default").create(approvalJob)
-//
-//                    batch().jobs().inNamespace("default").withName(approvalJob.metadata.name)
-//                        .waitUntilCondition({
-//                            if (it.status.succeeded == null)
-//                                return@waitUntilCondition false
-//                            it.status.succeeded == 1
-//                        }, 20, TimeUnit.SECONDS)
-//
-//                    batch().jobs().delete(approvalJob)
-//
-//                    return@connectAsService 0
-//                }
-//
-//                call.respond(response)
             }
         }
     }

@@ -23,8 +23,10 @@ class UserRepositoryImpl : UserRepository, KoinComponent {
 
     override suspend fun retrieve(userIdentity: ClusterUser): ClusterUser = coroutineScope {
         val signingRequest = signingRequestRepository.retrieve(userIdentity.id)
+            ?: throw StatusException(HttpStatusCode.NotFound, "Signing Request for '$userIdentity.id' does not exists.")
+
         if (signingRequest.clientCert == null)
-            throw StatusException(HttpStatusCode.BadRequest, "Signing Request has not been approved yet.")
+            throw StatusException(HttpStatusCode.BadRequest, "Signing Request has been denied or is still pending.")
 
         ClusterUser(signingRequest.clientCert!!, signingRequest.clientKey)
     }
@@ -42,4 +44,10 @@ class UserRepositoryImpl : UserRepository, KoinComponent {
         retrieve(userIdentity)
     }
 
+    override suspend fun delete(userIdentity: ClusterUser): Boolean = coroutineScope {
+        val signingRequest = signingRequestRepository.retrieve(userIdentity.id)
+            ?: throw StatusException(HttpStatusCode.NotFound, "Signing Request for '${userIdentity.id}' does not exists.")
+
+        signingRequestRepository.delete(signingRequest.certificateSigningRequest)
+    }
 }

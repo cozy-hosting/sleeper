@@ -13,10 +13,11 @@ class SigningRequestRepositoryImpl : SigningRequestRepository, KoinComponent {
 
     private val clusterClient: ServiceClusterClient by inject()
 
-    override suspend fun retrieve(name: String): SigningRequest = coroutineScope {
+    override suspend fun retrieve(name: String): SigningRequest? = coroutineScope {
         val response = clusterClient.connectAsService {
             certificateSigningRequests().withName(name).get()
-        }
+        } ?: return@coroutineScope null
+
         SigningRequest(response)
     }
 
@@ -27,4 +28,9 @@ class SigningRequestRepositoryImpl : SigningRequestRepository, KoinComponent {
         SigningRequest(response)
     }
 
+    override suspend fun delete(certificateSigningRequest: CertificateSigningRequest): Boolean = coroutineScope {
+        clusterClient.connectAsService {
+            certificateSigningRequests().delete(certificateSigningRequest)
+        }
+    }
 }

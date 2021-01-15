@@ -44,19 +44,20 @@ dependencies {
     implementation("org.bouncycastle:bcpkix-jdk15on:1.66")
 
     // Main dependencies for testing including Ktor and the JUnit 5 testing framework
+    testImplementation(kotlin("test-junit5"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
     testImplementation("org.assertj:assertj-core:$assertjVersion")
     testImplementation("org.koin:koin-test-junit5:$koinVersion")
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+tasks.test {
+    useJUnitPlatform()
 }
 
-tasks.named<Test>("test") {
-    useJUnitPlatform()
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "1.8"
 }
 
 kotlin.sourceSets["main"].kotlin.srcDirs("src")

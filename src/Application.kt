@@ -1,14 +1,15 @@
 package cozy
 
-import cozy.endpoints.endpoints
 import cozy.middleware.auth.jwtBearer
-import cozy.middleware.context.Context
-import cozy.middleware.exception.ExceptionHandler.exceptionHandler
-import cozy.middleware.exception.exception
-import cozy.repositories.repositories
-import cozy.repositories.user.UserRepository
+import cozy.context.middleware.Context
+import cozy.exception.middleware.ExceptionHandler.exceptionHandler
+import cozy.exception.middleware.exception
+import cozy.auth.repositories.UserRepository
+import cozy.identity.identity
+import cozy.jobs.job
+import cozy.namespace.namespace
 import cozy.services.cluster.data.ClusterUser
-import cozy.services.services
+import cozy.services.cluster
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.features.*
@@ -20,7 +21,6 @@ import io.ktor.util.*
 import org.koin.core.component.KoinApiExtension
 import org.koin.ktor.ext.Koin
 import org.koin.ktor.ext.inject
-import java.util.*
 
 fun main(args: Array<String>): Unit = EngineMain.main(args)
 
@@ -32,9 +32,11 @@ fun Application.module() {
     install(Koin) {
         exception()
 
-        endpoints()
-        services()
-        repositories()
+        identity()
+        job()
+        namespace()
+
+        cluster()
     }
 
     install(ContentNegotiation) {
@@ -62,7 +64,7 @@ fun Application.module() {
             get {
                 val userIdentity = ClusterUser("16640c22-faf0-4766-813b-0494bdfe2642", "Max Mustermann", arrayOf("Customers"))
 
-                val user = userRepository.delete(userIdentity)
+                val user = userRepository.create(userIdentity)
 
                 call.respond(user)
             }

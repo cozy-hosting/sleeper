@@ -6,6 +6,11 @@ abstract class AbstractJob(open val name: String) {
 
     abstract val job: Job
 
-    val succeeded: Boolean? by lazy { if (job.status == null) false else job.status.succeeded > 0 }
+    val succeeded: Boolean? by lazy {
+        if (job.status == null || job.status.succeeded == null)
+            false
+        else
+            job.status.succeeded > 0
+    }
 
 }

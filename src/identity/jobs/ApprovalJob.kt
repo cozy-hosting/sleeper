@@ -1,4 +1,4 @@
-package cozy.services.cert.jobs
+package cozy.identity.jobs
 
 import cozy.auth.repositories.data.SigningRequest
 import cozy.repositories.jobs.data.AbstractJob
@@ -20,6 +20,7 @@ data class ApprovalJob(
         .withNewSpec()
         .withNewTemplate()
         .withNewSpec()
+        .withServiceAccount("sleeper")
         .addNewContainer()
         .withName("kubectl")
         .withImage("bitnami/kubectl:latest")

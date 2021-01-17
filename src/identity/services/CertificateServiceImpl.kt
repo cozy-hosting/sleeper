@@ -1,4 +1,4 @@
-package cozy.auth.services
+package cozy.identity.services
 
 import kotlinx.coroutines.coroutineScope
 import org.bouncycastle.jce.provider.BouncyCastleProvider

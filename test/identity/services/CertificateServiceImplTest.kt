@@ -1,8 +1,8 @@
 package identity.services
 
 import cozy.services.cluster.data.ClusterUser
-import cozy.auth.services.CertificateService
-import cozy.auth.services.CertificateServiceImpl
+import cozy.identity.services.CertificateService
+import cozy.identity.services.CertificateServiceImpl
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions
 import org.bouncycastle.asn1.x500.X500Name

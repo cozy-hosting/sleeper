@@ -1,13 +1,13 @@
 package cozy.identity
 
-import cozy.auth.repositories.SigningRequestRepository
-import cozy.auth.repositories.SigningRequestRepositoryImpl
-import cozy.auth.repositories.UserRepository
+import cozy.identity.repositories.SigningRequestRepository
+import cozy.identity.repositories.SigningRequestRepositoryImpl
+import cozy.identity.repositories.UserRepository
 import cozy.auth.repositories.UserRepositoryImpl
-import cozy.auth.services.CertificateService
-import cozy.auth.services.CertificateServiceImpl
-import cozy.auth.services.SigningRequestService
-import cozy.auth.services.SigningRequestServiceImpl
+import cozy.identity.services.CertificateService
+import cozy.identity.services.CertificateServiceImpl
+import cozy.identity.services.SigningRequestService
+import cozy.identity.services.SigningRequestServiceImpl
 import io.ktor.util.*
 import org.koin.core.KoinApplication
 import org.koin.core.component.KoinApiExtension

@@ -2,8 +2,8 @@ package cozy.jobs
 
 import cozy.jobs.repository.JobRepository
 import cozy.jobs.repository.JobRepositoryImpl
-import cozy.jobs.services.JobService
-import cozy.jobs.services.JobServiceImpl
+import cozy.job.services.JobService
+import cozy.job.services.JobServiceImpl
 import io.ktor.util.*
 import org.koin.core.KoinApplication
 import org.koin.core.component.KoinApiExtension

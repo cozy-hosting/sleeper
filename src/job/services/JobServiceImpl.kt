@@ -1,4 +1,4 @@
-package cozy.jobs.services
+package cozy.job.services
 
 import cozy.repositories.jobs.data.AbstractJob
 import cozy.repositories.jobs.data.BatchJob
@@ -13,19 +13,24 @@ class JobServiceImpl : JobService, KoinComponent {
 
     private val clusterClient: ServiceClusterClient by inject()
 
-    override suspend fun waitUntilCondition(abstractJob: AbstractJob, block: AbstractJob.() -> Boolean) {
+    override suspend fun waitUntilCondition(abstractJob: AbstractJob, block: AbstractJob.() -> Boolean): Boolean {
         val job = abstractJob.job
 
-        clusterClient.connectAsService {
-            batch().jobs()
-                .inNamespace(job.metadata.namespace)
-                .withName(job.metadata.name)
-                .waitUntilCondition({ block(BatchJob(it)) }, 20, TimeUnit.SECONDS)
+        try {
+            clusterClient.connectAsService {
+                batch().jobs()
+                    .inNamespace(job.metadata.namespace)
+                    .withName(job.metadata.name)
+                    .waitUntilCondition({ block(BatchJob(it)) }, 20, TimeUnit.SECONDS)
+            }
+        } catch (ex: IllegalArgumentException) {
+            return false
         }
+        return true
     }
 
-    override suspend fun waitUntilSucceeded(abstractJob: AbstractJob) {
-        waitUntilCondition(abstractJob) {
+    override suspend fun waitUntilSucceeded(abstractJob: AbstractJob): Boolean {
+        return waitUntilCondition(abstractJob) {
             succeeded ?: false
         }
     }

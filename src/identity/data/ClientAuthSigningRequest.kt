@@ -14,7 +14,7 @@ data class ClientAuthSigningRequest(
     val signingRequest: PKCS10CertificationRequest
 ) {
 
-    val kubernetes: CertificateSigningRequest
+    val certificateSigningRequest: CertificateSigningRequest
 
     init {
         validate(this) {
@@ -32,9 +32,15 @@ data class ClientAuthSigningRequest(
 
         val usages = listOf("client auth")
 
-        kubernetes = CertificateSigningRequestBuilder()
-            .withNewMetadata().withName(name).addToAnnotations(SigningRequest.CLIENT_KEY, clientKeyString).endMetadata()
-            .withNewSpec().withRequest(signingRequestString).withUsages(usages).endSpec()
+        certificateSigningRequest = CertificateSigningRequestBuilder()
+            .withNewMetadata()
+            .withName(name)
+            .addToAnnotations(SigningRequest.CLIENT_KEY, clientKeyString)
+            .endMetadata()
+            .withNewSpec()
+            .withRequest(signingRequestString)
+            .withUsages(usages)
+            .endSpec()
             .build()
     }
 

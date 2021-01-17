@@ -1,4 +1,4 @@
-package cozy.auth.repositories
+package cozy.identity.repositories
 
 import cozy.auth.repositories.data.SigningRequest
 import cozy.cluster.services.ServiceClusterClient

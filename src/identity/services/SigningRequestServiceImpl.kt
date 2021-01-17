@@ -1,14 +1,15 @@
-package cozy.auth.services
+package cozy.identity.services
 
 import cozy.auth.repositories.data.SigningRequest
 import cozy.jobs.repository.JobRepository
 import cozy.namespace.repositories.NamespaceRepository
-import cozy.services.cert.jobs.ApprovalJob
-import cozy.jobs.services.JobService
+import cozy.identity.jobs.ApprovalJob
+import cozy.job.services.JobService
 import kotlinx.coroutines.coroutineScope
 import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.lang.RuntimeException
 
 @KoinApiExtension
 class SigningRequestServiceImpl : SigningRequestService, KoinComponent {
@@ -25,7 +26,11 @@ class SigningRequestServiceImpl : SigningRequestService, KoinComponent {
 
         jobRepository.create(approval)
 
-        jobService.waitUntilSucceeded(approval)
+        if (!jobService.waitUntilSucceeded(approval)) {
+            jobRepository.delete(approval)
+
+            throw RuntimeException("Scheduled approval job did not complete successfully.")
+        }
 
         jobRepository.delete(approval)
     }

@@ -1,4 +1,4 @@
-package cozy.auth.services
+package cozy.identity.services
 
 import cozy.auth.repositories.data.SigningRequest
 

@@ -4,7 +4,7 @@ import cozy.middleware.auth.jwtBearer
 import cozy.context.middleware.Context
 import cozy.exception.middleware.ExceptionHandler.exceptionHandler
 import cozy.exception.middleware.exception
-import cozy.auth.repositories.UserRepository
+import cozy.identity.repositories.UserRepository
 import cozy.identity.identity
 import cozy.jobs.job
 import cozy.namespace.namespace
@@ -61,12 +61,12 @@ fun Application.module() {
 
     routing {
         authenticate {
-            get {
+            post {
                 val userIdentity = ClusterUser("16640c22-faf0-4766-813b-0494bdfe2642", "Max Mustermann", arrayOf("Customers"))
 
-                val user = userRepository.create(userIdentity)
+                userRepository.create(userIdentity)
 
-                call.respond(user)
+                call.respond(userRepository.retrieve(userIdentity))
             }
         }
     }

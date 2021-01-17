@@ -1,4 +1,4 @@
-package cozy.auth.repositories
+package cozy.identity.repositories
 
 import cozy.services.cluster.data.ClusterUser
 

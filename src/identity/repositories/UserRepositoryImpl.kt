@@ -1,16 +1,19 @@
 package cozy.auth.repositories
 
-import cozy.exception.middleware.StatusException
 import cozy.auth.repositories.data.ClientAuthSigningRequest
-import cozy.auth.services.SigningRequestService
+import cozy.identity.services.SigningRequestService
 import cozy.services.cluster.data.ClusterUser
-import cozy.auth.services.CertificateService
+import cozy.identity.services.CertificateService
 import cozy.auth.services.toPemString
-import io.ktor.http.*
+import cozy.identity.repositories.SigningRequestRepository
+import cozy.identity.repositories.UserRepository
+import io.fabric8.kubernetes.client.KubernetesClientException
 import kotlinx.coroutines.coroutineScope
 import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.lang.RuntimeException
+import javax.naming.OperationNotSupportedException
 
 @KoinApiExtension
 class UserRepositoryImpl : UserRepository, KoinComponent {
@@ -22,10 +25,10 @@ class UserRepositoryImpl : UserRepository, KoinComponent {
 
     override suspend fun retrieve(userIdentity: ClusterUser): ClusterUser = coroutineScope {
         val signingRequest = signingRequestRepository.retrieve(userIdentity.id)
-            ?: throw StatusException(HttpStatusCode.NotFound, "Signing Request for '$userIdentity.id' does not exists.")
+            ?: throw OperationNotSupportedException("Signing Request for '${userIdentity.id}' does not exists.")
 
         if (signingRequest.clientCert == null)
-            throw StatusException(HttpStatusCode.BadRequest, "Signing Request has been denied or is still pending.")
+            throw OperationNotSupportedException("Signing Request has been denied, or is still pending.")
 
         ClusterUser(signingRequest.clientCert!!, signingRequest.clientKey)
     }
@@ -37,15 +40,23 @@ class UserRepositoryImpl : UserRepository, KoinComponent {
         val signingRequestData = certificateService.buildSigningRequest(keyPair, userIdentity.toPrincipal())
         val authSigningRequest = ClientAuthSigningRequest(userIdentity.id, clientKey, signingRequestData)
 
-        val signingRequest = signingRequestRepository.create(authSigningRequest.kubernetes)
-        signingRequestService.approve(signingRequest)
+        try {
+            val signingRequest = signingRequestRepository.create(authSigningRequest.certificateSigningRequest)
+            signingRequestService.approve(signingRequest)
 
-        retrieve(userIdentity)
+            retrieve(userIdentity)
+        } catch (e: KubernetesClientException) {
+            throw OperationNotSupportedException("User '${userIdentity.id}' already exists.")
+        } catch (e: RuntimeException) {
+            signingRequestRepository.delete(authSigningRequest.certificateSigningRequest)
+
+            throw OperationNotSupportedException("User '${userIdentity.id}' could not be approved.")
+        }
     }
 
     override suspend fun delete(userIdentity: ClusterUser): Boolean = coroutineScope {
         val signingRequest = signingRequestRepository.retrieve(userIdentity.id)
-            ?: throw StatusException(HttpStatusCode.NotFound, "Signing Request for '${userIdentity.id}' does not exists.")
+            ?: throw OperationNotSupportedException("Signing Request for '${userIdentity.id}' does not exists.")
 
         signingRequestRepository.delete(signingRequest.certificateSigningRequest)
     }

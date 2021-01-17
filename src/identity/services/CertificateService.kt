@@ -1,4 +1,4 @@
-package cozy.auth.services
+package cozy.identity.services
 
 import org.bouncycastle.pkcs.PKCS10CertificationRequest
 import java.security.KeyPair

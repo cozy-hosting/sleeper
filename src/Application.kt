@@ -1,6 +1,6 @@
 package cozy
 
-import cozy.middleware.auth.jwtBearer
+import cozy.identity.middleware.jwtBearer
 import cozy.context.middleware.Context
 import cozy.exception.middleware.ExceptionHandler.exceptionHandler
 import cozy.exception.middleware.exception

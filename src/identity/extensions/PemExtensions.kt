@@ -1,4 +1,4 @@
-package cozy.auth.services
+package cozy.identity.extensions
 
 import org.bouncycastle.pkcs.PKCS10CertificationRequest
 import org.bouncycastle.util.io.pem.PemObject

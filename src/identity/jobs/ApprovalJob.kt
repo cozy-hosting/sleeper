@@ -1,6 +1,6 @@
 package cozy.identity.jobs
 
-import cozy.auth.repositories.data.SigningRequest
+import cozy.identity.data.SigningRequest
 import cozy.repositories.jobs.data.AbstractJob
 import io.fabric8.kubernetes.api.model.Namespace
 import io.fabric8.kubernetes.api.model.batch.Job

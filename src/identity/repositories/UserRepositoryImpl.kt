@@ -1,10 +1,10 @@
-package cozy.auth.repositories
+package cozy.identity.repositories
 
-import cozy.auth.repositories.data.ClientAuthSigningRequest
+import cozy.identity.data.ClientAuthSigningRequest
 import cozy.identity.services.SigningRequestService
 import cozy.services.cluster.data.ClusterUser
 import cozy.identity.services.CertificateService
-import cozy.auth.services.toPemString
+import cozy.identity.extensions.toPemString
 import cozy.identity.repositories.SigningRequestRepository
 import cozy.identity.repositories.UserRepository
 import io.fabric8.kubernetes.client.KubernetesClientException

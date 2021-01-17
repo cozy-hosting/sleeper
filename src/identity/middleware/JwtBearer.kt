@@ -1,4 +1,4 @@
-package cozy.middleware.auth
+package cozy.identity.middleware
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier

@@ -3,7 +3,7 @@ package cozy.identity
 import cozy.identity.repositories.SigningRequestRepository
 import cozy.identity.repositories.SigningRequestRepositoryImpl
 import cozy.identity.repositories.UserRepository
-import cozy.auth.repositories.UserRepositoryImpl
+import cozy.identity.repositories.UserRepositoryImpl
 import cozy.identity.services.CertificateService
 import cozy.identity.services.CertificateServiceImpl
 import cozy.identity.services.SigningRequestService

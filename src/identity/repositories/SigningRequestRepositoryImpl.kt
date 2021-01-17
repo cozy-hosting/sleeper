@@ -1,6 +1,6 @@
 package cozy.identity.repositories
 
-import cozy.auth.repositories.data.SigningRequest
+import cozy.identity.data.SigningRequest
 import cozy.cluster.services.ServiceClusterClient
 import io.fabric8.kubernetes.api.model.certificates.CertificateSigningRequest
 import kotlinx.coroutines.coroutineScope

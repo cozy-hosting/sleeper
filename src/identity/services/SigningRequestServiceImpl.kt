@@ -1,6 +1,6 @@
 package cozy.identity.services
 
-import cozy.auth.repositories.data.SigningRequest
+import cozy.identity.data.SigningRequest
 import cozy.jobs.repository.JobRepository
 import cozy.namespace.repositories.NamespaceRepository
 import cozy.identity.jobs.ApprovalJob

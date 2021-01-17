@@ -1,6 +1,6 @@
 package cozy.identity.services
 
-import cozy.auth.repositories.data.SigningRequest
+import cozy.identity.data.SigningRequest
 
 interface SigningRequestService {
 

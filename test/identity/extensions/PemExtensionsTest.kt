@@ -4,7 +4,7 @@ import identity.asserts.PemFormatAssert
 import cozy.services.cluster.data.ClusterUser
 import cozy.identity.services.CertificateService
 import cozy.identity.services.CertificateServiceImpl
-import cozy.auth.services.toPemString
+import cozy.identity.extensions.toPemString
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension

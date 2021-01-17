@@ -1,4 +1,4 @@
-package cozy.auth.repositories.data
+package cozy.identity.data
 
 import io.fabric8.kubernetes.api.model.certificates.CertificateSigningRequest
 import org.valiktor.functions.isNotBlank

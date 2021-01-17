@@ -1,6 +1,6 @@
-package cozy.auth.repositories.data
+package cozy.identity.data
 
-import cozy.auth.services.toPemString
+import cozy.identity.extensions.toPemString
 import io.fabric8.kubernetes.api.model.certificates.CertificateSigningRequest
 import io.fabric8.kubernetes.api.model.certificates.CertificateSigningRequestBuilder
 import org.bouncycastle.pkcs.PKCS10CertificationRequest

@@ -1,8 +1,11 @@
 package cozy.identity.repositories
 
-import cozy.identity.data.SigningRequest
 import cozy.cluster.services.ServiceClusterClient
+import cozy.exception.middleware.StatusException
+import cozy.identity.data.SigningRequest
 import io.fabric8.kubernetes.api.model.certificates.CertificateSigningRequest
+import io.fabric8.kubernetes.client.KubernetesClientException
+import io.ktor.http.*
 import kotlinx.coroutines.coroutineScope
 import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
@@ -22,10 +25,18 @@ class SigningRequestRepositoryImpl : SigningRequestRepository, KoinComponent {
     }
 
     override suspend fun create(certificateSigningRequest: CertificateSigningRequest): SigningRequest = coroutineScope {
-        val response = clusterClient.connectAsService {
-            certificateSigningRequests().create(certificateSigningRequest)
+        try {
+            val response = clusterClient.connectAsService {
+                certificateSigningRequests().create(certificateSigningRequest)
+            }
+            SigningRequest(response)
+        } catch (e: KubernetesClientException) {
+            throw StatusException(
+                HttpStatusCode.BadRequest,
+                "Certificate signing request '${certificateSigningRequest.metadata.name}' already exists.",
+                e
+            )
         }
-        SigningRequest(response)
     }
 
     override suspend fun delete(certificateSigningRequest: CertificateSigningRequest): Boolean = coroutineScope {

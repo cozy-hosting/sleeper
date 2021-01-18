@@ -19,8 +19,8 @@ class ThrowableHandler: QueryHandler<ThrowableQuery, ExceptionDetails> {
         )
 
         // Provide some information about the exception to the log
-        logger.error("Internal Server error occurred with id \"${details.id}\" for reason \"${details.message}\"")
-        logger.error("Stack trace for the \"${details.type}\":\n ${query.throwable.stackTraceToString()}")
+        logger.error("Internal Server error occurred with id '${details.id}' for reason '${details.message}'")
+        logger.error("Stack trace for the '${details.type}':\n ${query.throwable.stackTraceToString()}")
 
         // Return the ExceptionDetails
         return details

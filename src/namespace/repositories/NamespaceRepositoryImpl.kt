@@ -1,7 +1,10 @@
 package cozy.namespace.repositories
 
 import cozy.cluster.services.ServiceClusterClient
+import cozy.exception.middleware.StatusException
 import io.fabric8.kubernetes.api.model.Namespace
+import io.fabric8.kubernetes.client.KubernetesClientException
+import io.ktor.http.*
 import kotlinx.coroutines.coroutineScope
 import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
@@ -25,8 +28,16 @@ class NamespaceRepositoryImpl : NamespaceRepository, KoinComponent {
     }
 
     override suspend fun create(namespace: Namespace): Namespace = coroutineScope {
-        clusterClient.connectAsService {
-            namespaces().create(namespace)
+        try {
+            clusterClient.connectAsService {
+                namespaces().create(namespace)
+            }
+        } catch (e: KubernetesClientException) {
+            throw StatusException(
+                HttpStatusCode.BadRequest,
+                "Namespace '${namespace.metadata.name}' already exists.",
+                e
+            )
         }
     }
 

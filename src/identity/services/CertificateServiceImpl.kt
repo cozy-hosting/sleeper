@@ -10,7 +10,7 @@ import java.security.KeyPairGenerator
 import java.security.Security
 import javax.security.auth.x500.X500Principal
 
-class CertificateServiceImpl: CertificateService {
+class CertificateServiceImpl : CertificateService {
 
     init {
         Security.addProvider(BouncyCastleProvider())
@@ -24,7 +24,8 @@ class CertificateServiceImpl: CertificateService {
         generator.generateKeyPair()
     }
 
-    override suspend fun buildSigningRequest(keyPair: KeyPair, principal: X500Principal): PKCS10CertificationRequest = coroutineScope {
+    override suspend fun buildSigningRequest(keyPair: KeyPair, principal: X500Principal): PKCS10CertificationRequest =
+        coroutineScope {
         val privateKey = keyPair.private
         val publicKey = keyPair.public
 

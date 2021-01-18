@@ -13,13 +13,13 @@ class StatusExceptionQueryHandler: QueryHandler<StatusExceptionQuery, ExceptionD
     override fun handle(query: StatusExceptionQuery): ExceptionDetails {
         // Declare the ExceptionDetails from the StatusException
         val details = ExceptionDetails(
-            message = query.statusException.message!!,
+            message = query.statusException.message,
             status = query.statusException.status,
             type = query.statusException::class.java.typeName.split(".").last()
         )
 
         // Provide some information about the exception to the log
-        logger.warn("Respond status \"${details.status}\" with message \"${details.message}\"")
+        logger.warn("Respond status '${details.status}' with message '${details.message}'")
 
         // Return the ExceptionDetails
         return details

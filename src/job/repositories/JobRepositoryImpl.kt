@@ -1,9 +1,12 @@
 package cozy.jobs.repository
 
+import cozy.cluster.services.ServiceClusterClient
+import cozy.exception.middleware.StatusException
 import cozy.repositories.jobs.data.AbstractJob
 import cozy.repositories.jobs.data.BatchJob
-import cozy.cluster.services.ServiceClusterClient
 import io.fabric8.kubernetes.api.model.Namespace
+import io.fabric8.kubernetes.client.KubernetesClientException
+import io.ktor.http.*
 import kotlinx.coroutines.coroutineScope
 import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
@@ -31,10 +34,14 @@ class JobRepositoryImpl : JobRepository, KoinComponent {
     override suspend fun create(abstractJob: AbstractJob): AbstractJob = coroutineScope {
         val job = abstractJob.job
 
-        val result = clusterClient.connectAsService {
-            batch().jobs().inNamespace(job.metadata.namespace).create(job)
+        try {
+            val result = clusterClient.connectAsService {
+                batch().jobs().inNamespace(job.metadata.namespace).create(job)
+            }
+            BatchJob(result)
+        } catch (e: KubernetesClientException) {
+            throw StatusException(HttpStatusCode.BadRequest, "Job '${job.metadata.name}' already exists.", e)
         }
-        BatchJob(result)
     }
 
     override suspend fun delete(abstractJob: AbstractJob): Boolean = coroutineScope {

@@ -2,11 +2,12 @@ package cozy.identity
 
 import com.trendyol.kediatr.CommandBusBuilder
 import cozy.identity.endpoints.UserEndpoint.createUser
+import cozy.identity.endpoints.UserEndpoint.retrieveUser
 import cozy.identity.repositories.SigningRequestRepository
 import cozy.identity.repositories.SigningRequestRepositoryImpl
 import cozy.identity.repositories.UserRepository
 import cozy.identity.repositories.UserRepositoryImpl
-import cozy.identity.requests.CreateUserCommand
+import cozy.identity.requests.UserEndpointCreateCommand
 import cozy.identity.requests.IdentityBus
 import cozy.identity.services.CertificateService
 import cozy.identity.services.CertificateServiceImpl
@@ -30,7 +31,7 @@ fun KoinApplication.identity() {
         single<CertificateService> { CertificateServiceImpl() }
         single<SigningRequestService> { SigningRequestServiceImpl() }
 
-        single(named<IdentityBus>()) { CommandBusBuilder(CreateUserCommand::class.java).build() }
+        single(named<IdentityBus>()) { CommandBusBuilder(UserEndpointCreateCommand::class.java).build() }
     }
 
     modules(identityModule)
@@ -40,6 +41,7 @@ fun KoinApplication.identity() {
 @KtorExperimentalLocationsAPI
 fun Route.identity() {
     route("/user") {
+        retrieveUser()
         createUser()
     }
 }

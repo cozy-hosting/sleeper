@@ -7,16 +7,17 @@ import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
+@Suppress("unused")
 @KoinApiExtension
-class CreateUserCommandHandler: AsyncCommandHandler<CreateUserCommand>, KoinComponent {
+class UserEndpointCreateCommandHandler: AsyncCommandHandler<UserEndpointCreateCommand>, KoinComponent {
 
     private val userRepository: UserRepository by inject()
 
-    override suspend fun handleAsync(command: CreateUserCommand) {
+    override suspend fun handleAsync(command: UserEndpointCreateCommand) {
         val userIdentity = ClusterUser(
-            command.createUserDto.id,
-            command.createUserDto.name,
-            command.createUserDto.groups
+            command.userCreateDto.id,
+            command.userCreateDto.name,
+            command.userCreateDto.groups
         )
 
         userRepository.create(userIdentity)

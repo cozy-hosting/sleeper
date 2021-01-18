@@ -6,7 +6,7 @@ import org.valiktor.functions.isNotEmpty
 import org.valiktor.validate
 
 @Serializable
-data class CreateUserDto(
+data class UserCreateDto(
     val id: String,
     val name: String,
     val groups: Array<String>,
@@ -14,9 +14,9 @@ data class CreateUserDto(
 
     init {
         validate(this) {
-            validate(CreateUserDto::id).isNotBlank()
-            validate(CreateUserDto::name).isNotBlank()
-            validate(CreateUserDto::groups).isNotEmpty()
+            validate(UserCreateDto::id).isNotBlank()
+            validate(UserCreateDto::name).isNotBlank()
+            validate(UserCreateDto::groups).isNotEmpty()
         }
     }
 
@@ -24,7 +24,7 @@ data class CreateUserDto(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as CreateUserDto
+        other as UserCreateDto
 
         if (id != other.id) return false
         if (name != other.name) return false

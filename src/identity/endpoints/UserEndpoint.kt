@@ -1,10 +1,10 @@
 package cozy.identity.endpoints
 
 import com.trendyol.kediatr.CommandBus
-import cozy.exception.middleware.StatusException
-import cozy.identity.data.CreateUserDto
-import cozy.identity.requests.CreateUserCommand
+import cozy.identity.data.UserCreateDto
+import cozy.identity.requests.UserEndpointCreateCommand
 import cozy.identity.requests.IdentityBus
+import cozy.identity.requests.UserEndpointRetrieveQuery
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.locations.*
@@ -18,19 +18,36 @@ import org.koin.core.qualifier.named
 
 @KoinApiExtension
 @KtorExperimentalLocationsAPI
-object UserEndpoint: KoinComponent {
+object UserEndpoint : KoinComponent {
 
-    @Location("") class Create
+    @Location("{id}")
+    class Retrieve(val id: String)
+
+    @Location("")
+    class Create
 
     private val commandBus: CommandBus by inject(named<IdentityBus>())
 
+    fun Route.retrieveUser() {
+        get<Retrieve> {
+            val retrieveUserQuery = UserEndpointRetrieveQuery(it.id)
+            val userIdentity = commandBus.executeQueryAsync(retrieveUserQuery)
+
+            call.respond(HttpStatusCode.OK, userIdentity)
+        }
+    }
+
     fun Route.createUser() {
         post<Create> {
-            val createUserDto = call.receive<CreateUserDto>()
+            val createUserDto = call.receive<UserCreateDto>()
 
-            val createUserCommand = CreateUserCommand(createUserDto)
+            val createUserCommand = UserEndpointCreateCommand(createUserDto)
             commandBus.executeCommandAsync(createUserCommand)
 
+            call.response.header(
+                HttpHeaders.Location,
+                call.request.uri + locations.href(Retrieve(createUserDto.id))
+            )
             call.respond(HttpStatusCode.Created)
         }
     }

@@ -1,47 +1,43 @@
 package cozy.identity.repositories
 
-import cozy.cluster.services.ServiceClusterClient
+import com.trendyol.kediatr.CommandBus
 import cozy.exception.middleware.StatusException
 import cozy.identity.data.SigningRequest
+import cozy.identity.requests.IdentityBus
+import cozy.identity.requests.SigningRequestRepositoryCreateCommand
+import cozy.identity.requests.SigningRequestRepositoryDeleteCommand
+import cozy.identity.requests.SigningRequestRepositoryRetrieveQuery
 import io.fabric8.kubernetes.api.model.certificates.CertificateSigningRequest
-import io.fabric8.kubernetes.client.KubernetesClientException
 import io.ktor.http.*
-import kotlinx.coroutines.coroutineScope
 import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.core.qualifier.named
 
 @KoinApiExtension
 class SigningRequestRepositoryImpl : SigningRequestRepository, KoinComponent {
 
-    private val clusterClient: ServiceClusterClient by inject()
+    private val commandBus: CommandBus by inject(named<IdentityBus>())
 
-    override suspend fun retrieve(name: String): SigningRequest? = coroutineScope {
-        val response = clusterClient.connectAsService {
-            certificateSigningRequests().withName(name).get()
-        } ?: return@coroutineScope null
-
-        SigningRequest(response)
+    override suspend fun retrieve(name: String): SigningRequest? {
+        val retrieveQuery = SigningRequestRepositoryRetrieveQuery(name)
+        return commandBus.executeQueryAsync(retrieveQuery)
     }
 
-    override suspend fun create(certificateSigningRequest: CertificateSigningRequest): SigningRequest = coroutineScope {
-        try {
-            val response = clusterClient.connectAsService {
-                certificateSigningRequests().create(certificateSigningRequest)
-            }
-            SigningRequest(response)
-        } catch (e: KubernetesClientException) {
-            throw StatusException(
-                HttpStatusCode.BadRequest,
-                "Certificate signing request '${certificateSigningRequest.metadata.name}' already exists.",
-                e
-            )
-        }
+    override suspend fun create(certificateSigningRequest: CertificateSigningRequest): SigningRequest {
+        val createCommand = SigningRequestRepositoryCreateCommand(certificateSigningRequest)
+        commandBus.executeCommandAsync(createCommand)
+
+        return retrieve(certificateSigningRequest.metadata.name) ?: throw StatusException(
+            HttpStatusCode.NotFound,
+            "Certificate Signing Request '${certificateSigningRequest.metadata.name}' could not be created."
+        )
     }
 
-    override suspend fun delete(certificateSigningRequest: CertificateSigningRequest): Boolean = coroutineScope {
-        clusterClient.connectAsService {
-            certificateSigningRequests().delete(certificateSigningRequest)
-        }
+    override suspend fun delete(certificateSigningRequest: CertificateSigningRequest): Boolean {
+        val deleteCommand = SigningRequestRepositoryDeleteCommand(certificateSigningRequest)
+        commandBus.executeCommandAsync(deleteCommand)
+
+        return true
     }
 }

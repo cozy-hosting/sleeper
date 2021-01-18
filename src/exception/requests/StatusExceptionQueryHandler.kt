@@ -14,7 +14,7 @@ class StatusExceptionQueryHandler: QueryHandler<StatusExceptionQuery, ExceptionD
         // Declare the ExceptionDetails from the StatusException
         val details = ExceptionDetails(
             message = query.statusException.message,
-            status = query.statusException.status,
+            status = query.statusException.status.value,
             type = query.statusException::class.java.typeName.split(".").last()
         )
 

@@ -14,7 +14,7 @@ class ThrowableHandler: QueryHandler<ThrowableQuery, ExceptionDetails> {
         // Declare the ExceptionDetails from the Throwable
         val details = ExceptionDetails(
             message = query.throwable.message ?: "Unknown reason",
-            status = HttpStatusCode.InternalServerError,
+            status = HttpStatusCode.InternalServerError.value,
             type = query.throwable::class.java.typeName.split(".").last()
         )
 

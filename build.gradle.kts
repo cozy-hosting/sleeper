@@ -13,7 +13,8 @@ val valikatorVersion: String by project
 val kubernetesVersion: String by project
 
 plugins {
-    kotlin("jvm") version "1.4.0"
+    kotlin("jvm") version "1.4.10"
+    kotlin("plugin.serialization") version "1.4.10"
     application
 }
 
@@ -32,7 +33,7 @@ dependencies {
     // Main dependencies including Ktor and the Kotlin language
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
-    implementation("io.ktor:ktor-gson:$ktorVersion")
+    implementation("io.ktor:ktor-serialization:$ktorVersion")
     implementation("io.ktor:ktor-auth-jwt:$ktorVersion")
     implementation("io.ktor:ktor-locations:$ktorVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")

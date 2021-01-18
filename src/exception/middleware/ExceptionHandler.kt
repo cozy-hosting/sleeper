@@ -30,7 +30,7 @@ object ExceptionHandler: KoinComponent {
                 query = ThrowableQuery(it)
 
             val result = bus.executeQuery(query)
-            call.respond(result.status, result)
+            call.respond(result.toHttpStatusCode(), result)
         }
 
         // Interceptor function for handling ConstraintViolationException
@@ -39,7 +39,7 @@ object ExceptionHandler: KoinComponent {
             val query = ConstraintViolationExceptionQuery(it)
 
             val result = bus.executeQuery(query)
-            call.respond(result.status, result)
+            call.respond(result.toHttpStatusCode(), result)
         }
 
         // Interceptor function for handling any unhandled Exceptions
@@ -48,7 +48,7 @@ object ExceptionHandler: KoinComponent {
             val query = ThrowableQuery(it)
 
             val result = bus.executeQuery(query)
-            call.respond(result.status, result)
+            call.respond(result.toHttpStatusCode(), result)
         }
     }
 }

@@ -21,7 +21,7 @@ class ConstraintViolationExceptionHandler: QueryHandler<ConstraintViolationExcep
         // Declare the ExceptionDetails from the ConstraintViolationException
         val details = ExceptionDetails(
             message = "Validation did not complete successfully",
-            status = HttpStatusCode.BadRequest,
+            status = HttpStatusCode.BadRequest.value,
             type = exception::class.java.typeName.split(".").last(),
             details = violatedConstraints
         )

@@ -1,6 +1,7 @@
 package cozy.identity.endpoints
 
 import com.trendyol.kediatr.CommandBus
+import cozy.exception.middleware.StatusException
 import cozy.identity.data.CreateUserDto
 import cozy.identity.requests.CreateUserCommand
 import cozy.identity.requests.IdentityBus

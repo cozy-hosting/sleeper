@@ -14,8 +14,6 @@ data class SigningRequest(val certificateSigningRequest: CertificateSigningReque
 
     init {
         validate(this) {
-            validate(SigningRequest::certificateSigningRequest).isNotNull()
-
             validate(SigningRequest::name).isNotBlank()
         }
     }

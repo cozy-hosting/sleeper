@@ -4,8 +4,6 @@ import cozy.identity.extensions.toPemString
 import io.fabric8.kubernetes.api.model.certificates.CertificateSigningRequest
 import io.fabric8.kubernetes.api.model.certificates.CertificateSigningRequestBuilder
 import org.bouncycastle.pkcs.PKCS10CertificationRequest
-import org.valiktor.functions.isNotNull
-import org.valiktor.validate
 import java.util.*
 
 data class ClientAuthSigningRequest(
@@ -17,10 +15,6 @@ data class ClientAuthSigningRequest(
     val certificateSigningRequest: CertificateSigningRequest
 
     init {
-        validate(this) {
-            validate(ClientAuthSigningRequest::signingRequest).isNotNull()
-        }
-
         val base64Encoder = Base64.getEncoder()
 
         val clientKeyAsBase64 = base64Encoder.encode(clientKey.toByteArray())

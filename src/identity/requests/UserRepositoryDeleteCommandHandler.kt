@@ -18,7 +18,7 @@ class UserRepositoryDeleteCommandHandler: AsyncCommandHandler<UserRepositoryDele
         val signingRequest = signingRequestRepository.retrieve(command.userIdentity.id)
             ?: throw StatusException(
                 HttpStatusCode.NotFound,
-                "Signing Request for '${command.userIdentity.id}' does not exists."
+                "User'${command.userIdentity.id}' does not exist."
             )
 
         signingRequestRepository.delete(signingRequest.certificateSigningRequest)

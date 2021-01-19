@@ -19,7 +19,7 @@ class UserRepositoryRetrieveQueryHandler : AsyncQueryHandler<UserRepositoryRetri
         val signingRequest = signingRequestRepository.retrieve(query.id)
             ?: throw StatusException(
                 HttpStatusCode.NotFound,
-                "Signing Request for '${query.id}' does not exists."
+                "User '${query.id}' does not exist."
             )
 
         if (signingRequest.clientCert == null)

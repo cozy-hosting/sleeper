@@ -44,11 +44,10 @@ data class ClusterUser(
 
         private fun getGroups(clientCert: String): Array<String> {
             val subject = getSubject(clientCert)
-            val organizations = subject.getRDNs(BCStyle.O)
+            val organizations = subject.getRDNs(BCStyle.O).first()
 
-            return organizations.map {
-                IETFUtils.valueToString(it.first.value)
-            }.toTypedArray()
+            return organizations.typesAndValues
+                .map { IETFUtils.valueToString(it.value) }.toTypedArray()
         }
     }
 

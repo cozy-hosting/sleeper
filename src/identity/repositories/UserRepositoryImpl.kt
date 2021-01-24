@@ -4,10 +4,7 @@ import com.trendyol.kediatr.CommandBus
 import cozy.exception.middleware.StatusException
 import cozy.identity.data.ClientAuthSigningRequest
 import cozy.identity.extensions.toPemString
-import cozy.identity.requests.IdentityBus
-import cozy.identity.requests.UserRepositoryCreateCommand
-import cozy.identity.requests.UserRepositoryDeleteCommand
-import cozy.identity.requests.UserRepositoryRetrieveQuery
+import cozy.identity.requests.*
 import cozy.identity.services.CertificateService
 import cozy.identity.services.SigningRequestService
 import cozy.services.cluster.data.ClusterUser
@@ -23,6 +20,11 @@ import org.koin.core.qualifier.named
 class UserRepositoryImpl : UserRepository, KoinComponent {
 
     private val commandBus: CommandBus by inject(named<IdentityBus>())
+
+    override suspend fun retrieveAll(drop: Int, skip: Int): List<ClusterUser> {
+        val retrieveAllQuery = UserRepositoryRetrieveAllQuery(drop, skip)
+        return commandBus.executeQueryAsync(retrieveAllQuery)
+    }
 
     override suspend fun retrieve(id: String): ClusterUser {
         val retrieveQuery = UserRepositoryRetrieveQuery(id)

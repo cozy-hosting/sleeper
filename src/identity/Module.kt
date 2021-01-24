@@ -2,6 +2,8 @@ package cozy.identity
 
 import com.trendyol.kediatr.CommandBusBuilder
 import cozy.identity.endpoints.UserEndpoint.createUser
+import cozy.identity.endpoints.UserEndpoint.deleteUser
+import cozy.identity.endpoints.UserEndpoint.retrieveAllUsers
 import cozy.identity.endpoints.UserEndpoint.retrieveUser
 import cozy.identity.repositories.SigningRequestRepository
 import cozy.identity.repositories.SigningRequestRepositoryImpl
@@ -13,7 +15,9 @@ import cozy.identity.services.CertificateService
 import cozy.identity.services.CertificateServiceImpl
 import cozy.identity.services.SigningRequestService
 import cozy.identity.services.SigningRequestServiceImpl
+import io.ktor.application.*
 import io.ktor.locations.*
+import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.*
 import org.koin.core.KoinApplication
@@ -41,8 +45,9 @@ fun KoinApplication.identity() {
 @KtorExperimentalLocationsAPI
 fun Route.identity() {
     route("/user") {
+        retrieveAllUsers()
         retrieveUser()
         createUser()
+        deleteUser()
     }
 }
-

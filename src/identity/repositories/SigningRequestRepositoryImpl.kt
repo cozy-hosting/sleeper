@@ -3,10 +3,7 @@ package cozy.identity.repositories
 import com.trendyol.kediatr.CommandBus
 import cozy.exception.middleware.StatusException
 import cozy.identity.data.SigningRequest
-import cozy.identity.requests.IdentityBus
-import cozy.identity.requests.SigningRequestRepositoryCreateCommand
-import cozy.identity.requests.SigningRequestRepositoryDeleteCommand
-import cozy.identity.requests.SigningRequestRepositoryRetrieveQuery
+import cozy.identity.requests.*
 import io.fabric8.kubernetes.api.model.certificates.CertificateSigningRequest
 import io.ktor.http.*
 import org.koin.core.component.KoinApiExtension
@@ -18,6 +15,11 @@ import org.koin.core.qualifier.named
 class SigningRequestRepositoryImpl : SigningRequestRepository, KoinComponent {
 
     private val commandBus: CommandBus by inject(named<IdentityBus>())
+
+    override suspend fun retrieveAll(drop: Int, take: Int): List<SigningRequest> {
+        val retrieveAllQuery = SigningRequestRepositoryRetrieveAllQuery(drop, take)
+        return commandBus.executeQueryAsync(retrieveAllQuery)
+    }
 
     override suspend fun retrieve(name: String): SigningRequest? {
         val retrieveQuery = SigningRequestRepositoryRetrieveQuery(name)

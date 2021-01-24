@@ -2,9 +2,8 @@ package cozy.identity.endpoints
 
 import com.trendyol.kediatr.CommandBus
 import cozy.identity.data.UserCreateDto
-import cozy.identity.requests.UserEndpointCreateCommand
-import cozy.identity.requests.IdentityBus
-import cozy.identity.requests.UserEndpointRetrieveQuery
+import cozy.identity.repositories.UserRepository
+import cozy.identity.requests.*
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.locations.*
@@ -20,13 +19,28 @@ import org.koin.core.qualifier.named
 @KtorExperimentalLocationsAPI
 object UserEndpoint : KoinComponent {
 
+    @Location("")
+    class RetrieveAll(val drop: Int = 0, val take: Int = 10)
+
     @Location("{id}")
     class Retrieve(val id: String)
 
     @Location("")
     class Create
 
+    @Location("{id}")
+    class Delete(val id: String)
+
     private val commandBus: CommandBus by inject(named<IdentityBus>())
+
+    fun Route.retrieveAllUsers() {
+        get<RetrieveAll> {
+            val retrieveAllQuery = UserEndpointRetrieveAllQuery(it.drop, it.take)
+            val userIdentities = commandBus.executeQueryAsync(retrieveAllQuery)
+
+            call.respond(HttpStatusCode.OK, userIdentities)
+        }
+    }
 
     fun Route.retrieveUser() {
         get<Retrieve> {
@@ -49,6 +63,15 @@ object UserEndpoint : KoinComponent {
                 call.request.uri + locations.href(Retrieve(createUserDto.id))
             )
             call.respond(HttpStatusCode.Created)
+        }
+    }
+
+    fun Route.deleteUser() {
+        delete<Delete> {
+            val deleteCommand = UserEndpointDeleteCommand(it.id)
+            commandBus.executeCommandAsync(deleteCommand)
+
+            call.respond(HttpStatusCode.NoContent)
         }
     }
 

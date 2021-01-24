@@ -64,7 +64,7 @@ class UserEndpointDeleteCommandHandlerShould: KoinTest {
         commandBus.executeCommandAsync(deleteCommand)
 
         // Assert
-        verify(userRepository, times(1)).retrieve(any())
+        verify(userRepository, times(1)).retrieve(someValidUserId)
         verify(userRepository, times(1)).delete(any())
     }
     // END: Tests

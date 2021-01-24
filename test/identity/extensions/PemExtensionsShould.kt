@@ -20,7 +20,7 @@ import org.koin.test.junit5.KoinTestExtension
 import javax.security.auth.x500.X500Principal
 
 @KoinApiExtension
-class PemExtensionsTest: KoinTest {
+class PemExtensionsShould: KoinTest {
 
     // BEGIN: Dependency injection
     private val certificateService: CertificateService = CertificateServiceImpl()
@@ -38,7 +38,7 @@ class PemExtensionsTest: KoinTest {
 
     // BEGIN: Tests
     @Test
-    fun `test private key matches pem format`(): Unit = runBlocking {
+    fun `generate valid private key in pem format`(): Unit = runBlocking {
         // Arrange
         val keyPair = certificateService.generateKeyPair()
         val privateKey = keyPair.private
@@ -52,7 +52,7 @@ class PemExtensionsTest: KoinTest {
     }
 
     @Test
-    fun `test certificate signing requests matches pem format`(): Unit = runBlocking {
+    fun `generate valid signing request in pem format`(): Unit = runBlocking {
         // Arrange
         val keyPair = certificateService.generateKeyPair()
         val userIdentity = ClusterUser(

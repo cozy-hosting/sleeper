@@ -9,6 +9,7 @@ val logbackVersion: String by project
 val koinVersion: String by project
 val kediatrVersion: String by project
 val valikatorVersion: String by project
+val mockitoVersion: String by project
 
 val kubernetesVersion: String by project
 
@@ -52,6 +53,8 @@ dependencies {
     testImplementation("org.assertj:assertj-core:$assertjVersion")
     testImplementation("org.koin:koin-test-junit5:$koinVersion")
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
+    testImplementation("org.mockito:mockito-core:$mockitoVersion")
+    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:$mockitoVersion")
 }
 
 tasks.test {

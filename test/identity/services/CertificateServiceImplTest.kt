@@ -1,5 +1,8 @@
 package identity.services
 
+import com.trendyol.kediatr.CommandBusBuilder
+import cozy.identity.requests.IdentityBus
+import cozy.identity.requests.UserEndpointCreateCommand
 import cozy.services.cluster.data.ClusterUser
 import cozy.identity.services.CertificateService
 import cozy.identity.services.CertificateServiceImpl
@@ -8,6 +11,8 @@ import org.assertj.core.api.Assertions
 import org.bouncycastle.asn1.x500.X500Name
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
+import org.koin.core.component.KoinApiExtension
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.koin.test.KoinTest
 import org.koin.test.junit5.KoinTestExtension
@@ -16,6 +21,7 @@ import java.security.interfaces.RSAPrivateCrtKey
 import java.security.interfaces.RSAPublicKey
 import javax.security.auth.x500.X500Principal
 
+@KoinApiExtension
 class CertificateServiceImplTest: KoinTest {
 
     // BEGIN: Dependency injection
@@ -26,6 +32,8 @@ class CertificateServiceImplTest: KoinTest {
     val koinTestExtension = KoinTestExtension.create {
         modules(module {
             single<CertificateService> { CertificateServiceImpl() }
+
+            single(named<IdentityBus>()) { CommandBusBuilder(UserEndpointCreateCommand::class.java).build() }
         })
     }
     // END: Dependency injection

@@ -1,18 +1,25 @@
 package identity.extensions
 
+import com.trendyol.kediatr.CommandBus
+import com.trendyol.kediatr.CommandBusBuilder
 import identity.asserts.PemFormatAssert
 import cozy.services.cluster.data.ClusterUser
 import cozy.identity.services.CertificateService
 import cozy.identity.services.CertificateServiceImpl
 import cozy.identity.extensions.toPemString
+import cozy.identity.requests.IdentityBus
+import cozy.identity.requests.UserEndpointCreateCommand
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
+import org.koin.core.component.KoinApiExtension
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.koin.test.KoinTest
 import org.koin.test.junit5.KoinTestExtension
 import javax.security.auth.x500.X500Principal
 
+@KoinApiExtension
 class PemExtensionsTest: KoinTest {
 
     // BEGIN: Dependency injection
@@ -23,6 +30,8 @@ class PemExtensionsTest: KoinTest {
     val koinTestExtension = KoinTestExtension.create {
         modules(module {
             single<CertificateService> { CertificateServiceImpl() }
+
+            single(named<IdentityBus>()) { CommandBusBuilder(UserEndpointCreateCommand::class.java).build() }
         })
     }
     // END: Dependency injection

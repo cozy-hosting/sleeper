@@ -1,44 +1,50 @@
 package cozy
 
-import cozy.endpoints.endpoints
-import cozy.middleware.auth.jwtBearer
-import cozy.middleware.context.Context
-import cozy.middleware.exception.ExceptionHandler.exceptionHandler
-import cozy.middleware.exception.exception
-import cozy.repositories.namespace.NamespaceRepository
-import cozy.repositories.repositories
-import cozy.services.services
+import cozy.context.middleware.Context
+import cozy.exception.middleware.ExceptionHandler.exceptionHandler
+import cozy.exception.middleware.exception
+import cozy.identity.identity
+import cozy.identity.middleware.jwtBearer
+import cozy.jobs.job
+import cozy.namespace.namespace
+import cozy.services.cluster
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.features.*
-import io.ktor.gson.*
-import io.ktor.response.*
+import io.ktor.locations.*
 import io.ktor.routing.*
+import io.ktor.serialization.*
 import io.ktor.server.netty.*
 import io.ktor.util.*
+import kotlinx.serialization.json.Json
 import org.koin.core.component.KoinApiExtension
 import org.koin.ktor.ext.Koin
-import org.koin.ktor.ext.inject
 
 fun main(args: Array<String>): Unit = EngineMain.main(args)
 
-@KoinApiExtension
 @KtorExperimentalAPI
+@KtorExperimentalLocationsAPI
+@KoinApiExtension
 fun Application.module() {
+    install(Locations)
+
     install(Context)
 
     install(Koin) {
         exception()
-
-        endpoints()
-        services()
-        repositories()
+        cluster()
+        namespace()
+        job()
+        identity()
     }
 
     install(ContentNegotiation) {
-        gson {
-            setPrettyPrinting()
-        }
+        json(Json {
+            prettyPrint = true
+            ignoreUnknownKeys = true
+            encodeDefaults = false
+            isLenient = true
+        })
     }
 
     install(StatusPages) {
@@ -50,17 +56,7 @@ fun Application.module() {
     }
 
     install(Routing) {
-        // Endpoint routing goes here
-    }
-
-    val namespaceRepository: NamespaceRepository by inject()
-
-    routing {
-        authenticate {
-            get {
-                val namespaces = namespaceRepository.retrieveAll()
-                call.respond(namespaces)
-            }
-        }
+        identity()
     }
 }
+

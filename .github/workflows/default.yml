@@ -19,7 +19,7 @@ jobs:
       
       - id: version_bump
         name: Bump version and push tag
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         uses: anothrNick/github-tag-action@1.26.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -35,12 +35,12 @@ jobs:
            az acr login -n oechsler
            
       - name: Build Docker image
-        if: github.ref != 'refs/heads/master'
+        if: github.ref != 'refs/heads/main'
         run: |
           docker build . -t sleeper:latest
           
       - name: Build and publish Docker image
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         uses: mr-smithers-excellent/docker-build-push@v5.2
         with:
           image: sleeper

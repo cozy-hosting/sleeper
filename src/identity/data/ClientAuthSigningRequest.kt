@@ -1,0 +1,41 @@
+package cozy.identity.data
+
+import cozy.identity.extensions.toPemString
+import io.fabric8.kubernetes.api.model.certificates.CertificateSigningRequest
+import io.fabric8.kubernetes.api.model.certificates.CertificateSigningRequestBuilder
+import org.bouncycastle.pkcs.PKCS10CertificationRequest
+import java.util.*
+
+data class ClientAuthSigningRequest(
+    val name: String,
+    val clientKey: String,
+    val signingRequest: PKCS10CertificationRequest
+) {
+
+    val certificateSigningRequest: CertificateSigningRequest
+
+    init {
+        val base64Encoder = Base64.getEncoder()
+
+        val clientKeyAsBase64 = base64Encoder.encode(clientKey.toByteArray())
+        val clientKeyString = String(clientKeyAsBase64)
+
+        val signingRequestAsPem = signingRequest.toPemString()
+        val signingRequestAsBase64 = base64Encoder.encode(signingRequestAsPem.toByteArray())
+        val signingRequestString = String(signingRequestAsBase64)
+
+        val usages = listOf("client auth")
+
+        certificateSigningRequest = CertificateSigningRequestBuilder()
+            .withNewMetadata()
+            .withName(name)
+            .addToAnnotations(SigningRequest.CLIENT_KEY, clientKeyString)
+            .endMetadata()
+            .withNewSpec()
+            .withRequest(signingRequestString)
+            .withUsages(usages)
+            .endSpec()
+            .build()
+    }
+
+}

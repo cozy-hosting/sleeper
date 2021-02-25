@@ -9,11 +9,13 @@ val logbackVersion: String by project
 val koinVersion: String by project
 val kediatrVersion: String by project
 val valikatorVersion: String by project
+val mockitoVersion: String by project
 
 val kubernetesVersion: String by project
 
 plugins {
-    kotlin("jvm") version "1.4.0"
+    kotlin("jvm") version "1.4.10"
+    kotlin("plugin.serialization") version "1.4.10"
     application
 }
 
@@ -32,8 +34,9 @@ dependencies {
     // Main dependencies including Ktor and the Kotlin language
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
-    implementation("io.ktor:ktor-gson:$ktorVersion")
+    implementation("io.ktor:ktor-serialization:$ktorVersion")
     implementation("io.ktor:ktor-auth-jwt:$ktorVersion")
+    implementation("io.ktor:ktor-locations:$ktorVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
 
     // Libraries used in the Ktor application
@@ -44,19 +47,22 @@ dependencies {
     implementation("org.bouncycastle:bcpkix-jdk15on:1.66")
 
     // Main dependencies for testing including Ktor and the JUnit 5 testing framework
+    testImplementation(kotlin("test-junit5"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
     testImplementation("org.assertj:assertj-core:$assertjVersion")
     testImplementation("org.koin:koin-test-junit5:$koinVersion")
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
+    testImplementation("org.mockito:mockito-core:$mockitoVersion")
+    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:$mockitoVersion")
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
-}
-
-tasks.named<Test>("test") {
-    useJUnitPlatform()
 }
 
 kotlin.sourceSets["main"].kotlin.srcDirs("src")

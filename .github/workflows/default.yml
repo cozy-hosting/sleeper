@@ -33,4 +33,4 @@ jobs:
           password: ${{ secrets.DO_PERSONAL_TOKEN }}
           registry: registry.digitalocean.com
           tags: "latest,${{ steps.version_bump.outputs.new_tag }}"
-          no_push: ${{ github.ref != 'refs/heads/master' }}
+          no_push: ${{ github.ref != 'refs/heads/main' }}

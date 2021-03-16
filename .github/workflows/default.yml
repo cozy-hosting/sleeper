@@ -25,24 +25,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
           
-      - name: Login to Azure via Azure-CLI
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-          
-      - name: Retrieve Azure Container Registry credentials
-        run: |
-           az acr login -n oechsler
-           
-      - name: Build Docker image
-        if: github.ref != 'refs/heads/main'
-        run: |
-          docker build . -t sleeper:latest
-          
       - name: Build and publish Docker image
-        if: github.ref == 'refs/heads/main'
-        uses: mr-smithers-excellent/docker-build-push@v5.2
+        uses: elgohr/Publish-Docker-Github-Action@3.02
         with:
-          image: sleeper
-          tags: latest, ${{ steps.version_bump.outputs.new_tag }}
-          registry: oechsler.azurecr.io
+          name: oechsler/sleeper
+          username: ${{ secrets.DO_PERSONAL_TOKEN }}
+          password: ${{ secrets.DO_PERSONAL_TOKEN }}
+          registry: registry.digitalocean.com
+          tags: "latest,${{ steps.version_bump.outputs.new_tag }}"
+          no_push: ${{ github.ref != 'refs/heads/master' }}
